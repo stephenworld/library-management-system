@@ -1,0 +1,32 @@
+{
+  "books": [
+    {
+      "id": "book_001",
+      "title": "",
+      "author": "",
+      "ISBN": "",
+      "available": "BORROWED | AVAILABLE",
+      "history": [
+        {
+          "member_id": "mem_001",
+          "borrowed_date": "",
+          "returned_date": ""
+        }
+      ]
+    }
+  ],
+  "members": [
+    {
+      "name": "mem_001",
+      "member_id": "",
+      "borrowed_books": [
+        {
+          "id": "book_001",
+          "author": "",
+          "ISBN": "",
+          "status": "RETURNED - INUSE"
+        }
+      ]
+    }
+  ]
+}
