@@ -1,4 +1,5 @@
 from utils.helper import clear_terminal
+from utils.config import add_book
 
 roles = ["Librarian", "Member"]
 
@@ -37,9 +38,9 @@ def librarian_features():
     user_action = input("Select an action: ").strip()
 
   if user_action == "1":
-    """
-    Add Books
-    """
+    clear_terminal()
+    add_book()
+
   elif user_action == "2":
     """
     Remove Books
