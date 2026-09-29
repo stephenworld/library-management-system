@@ -46,13 +46,15 @@ def update_book(entry):
 def delete_book(book_id):
   data = fetch_data()
   books = list(data["books"])
+  
+  updated_books = [book for book in books if book["id"] != book_id]
 
-  for idx, book in enumerate(books):
-    if book["id"] == book_id:
-      books.pop(idx)
-      break
-    continue
-
-  data["books"] = books
+  data["books"] = updated_books
   with open(json_file, "w") as file:
     json.dump(data, file, indent=2)
+
+def get_book_detail(book_id):
+  data = fetch_data()
+  books = data.get("books", [])
+
+  return next((book for book in books if book["id"] == book_id), None)
