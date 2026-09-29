@@ -43,3 +43,16 @@ def update_book(entry):
   with open(json_file, "w") as file:
     json.dump(data, file, indent=2)
 
+def delete_book(book_id):
+  data = fetch_data()
+  books = list(data["books"])
+
+  for idx, book in enumerate(books):
+    if book["id"] == book_id:
+      books.pop(idx)
+      break
+    continue
+
+  data["books"] = books
+  with open(json_file, "w") as file:
+    json.dump(data, file, indent=2)
