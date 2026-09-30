@@ -98,7 +98,7 @@ def view_members():
     else:
       print(f"{name} hasn't read any book from the library")
 
-def view_books(status, message):
+def view_books(status, message, show_history=True):
   print("SHOWING AVILABLE BOOKS IN LIBRARY")
   data = fetch_data()
   books = data["books"]
@@ -123,14 +123,36 @@ def view_books(status, message):
     print()
     print(f"--- Book {idx}: {title} ---")
     print(f"Author:    {author}")
-    print(f"ID/ISBN:   {book_id} / {isbn}")
+    print(f"BOOK ID:   {book_id}")
+    print(f"ISBN:      {isbn}")
     print(f"Available: {available}")
-    if history:
-      print("\nHistory")
-      for idx, his in enumerate(history, 1):
-        member_id = his["member_id"]
-        borrowed_date = his["borrowed_date"]
-        returned_date = his["returned_date"]
-        print(f"{idx} {member_id} lend the book on {borrowed_date} and returned {returned_date}")
-    else:
-      print("\nHistory:   No checkout history")
+    if show_history:
+      if history:
+        print("\nHistory")
+        for idx, his in enumerate(history, 1):
+          member_id = his["member_id"]
+          borrowed_date = his["borrowed_date"]
+          returned_date = his["returned_date"]
+          print(f"{idx} {member_id} lend the book on {borrowed_date} and returned {returned_date}")
+      else:
+        print("\nHistory:   No checkout history")
+
+def borrow_book():
+  view_books(status=True, message="All books has been borrowed.", show_history=False)
+
+  user_choice = input("Choose a book ID you want to borrow").strip()
+
+  data = fetch_data()
+  books = data["books"]
+  available_book_ids = [book["id"] for book in books if book["available"] == True]
+  
+  while user_choice not in available_book_ids:
+    print("BOOK ID IS INVALID")
+    user_choice = input("Choose a book ID you want to borrow").strip()
+
+  """
+  Update member borrowed books
+  Update Book history
+  Print success
+  """
+

@@ -1,5 +1,5 @@
 from utils.helper import clear_terminal
-from utils.config import add_book, remove_book, view_members, view_books
+from utils.config import add_book, remove_book, view_members, view_books, borrow_book
 
 roles = ["Librarian", "Member"]
 
@@ -74,9 +74,9 @@ def member_features():
     user_action = input("Select an action: ").strip()
 
   if user_action == "1":
-    """
-    Borrow Books
-    """
+    clear_terminal()
+    borrow_book()
+
   elif user_action == "2":
     """
     Return Books
