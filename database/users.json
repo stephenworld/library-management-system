@@ -1,22 +1,30 @@
 [
     {
-        "role": "librarian",
-        "id": 1,
-        "name": "Mr. Smith",
-        "email": "smith@library.com",
-        "department": "Archiving"
+        "id": "001",
+        "name": "Stephen Adewale",
+        "email": "stephen@gmail.com",
+        "role": "member",
+        "borrowed_books": []
     },
     {
+        "id": "002",
+        "name": "Stephen Adewale",
+        "email": "stepen@gmail.com",
+        "role": "librarian",
+        "department": "Engineering"
+    },
+    {
+        "id": 3,
+        "name": "12",
+        "email": "123",
         "role": "member",
-        "id": 2,
-        "name": "Alice",
-        "email": "alice@email.com",
-        "borrowed_books": [
-            {
-                "book_id": 101,
-                "date_borrowed": "2026-10-01T05:12:01.002928",
-                "date_returned": null
-            }
-        ]
+        "borrowed_books": []
+    },
+    {
+        "id": 4,
+        "name": "Test",
+        "email": "test@gmail.com",
+        "role": "member",
+        "borrowed_books": []
     }
 ]

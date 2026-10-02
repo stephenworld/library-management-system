@@ -1,11 +1,1 @@
-[
-    {
-        "book_id": 101,
-        "title": "The Hobbit",
-        "author": "J.R.R. Tolkien",
-        "isbn": "978-0-00-711711-6",
-        "status": "Borrowed",
-        "borrowed_at": "2026-10-01T05:12:01.002928",
-        "returned_at": null
-    }
-]
+[]
