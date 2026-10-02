@@ -1,4 +1,4 @@
-from utils import get_user_role, clear_terminal, create_account, login_member
+from utils import get_user_role, clear_terminal, create_account, login_member, login_librarian
 from models import Library
 
 
@@ -16,7 +16,7 @@ while exit == "y":
     case "2":
       login_member(users)
     case "3":
-      print("Login (Librarian)")
+      login_librarian(users)
     case _:
       print("Unknown Action")
 

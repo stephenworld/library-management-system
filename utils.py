@@ -122,11 +122,82 @@ def login_member(users):
                 print("No borrowed books")
                 return
             for b in data["borrowed_books"]:
-                print(b)
+                # "book_id"
+                # "title"
+                # "author"
+                # "isbn"
+                # "status"
+                # "borrowed_at"
+                # "returned_at"
+                print(b["title"])
             print()
 
         elif user_action == "2":
             print("Request a book")
+
+        prev = input("Anything else y/N: ")
+        if prev == "y":
+            prev_page = True
+        else:
+            prev_page = False
+
+    clear_terminal()
+
+
+def login_librarian(users):
+    clear_terminal()
+    print("Provide information below to login as a librarian")
+    email = prompt_input("Email", isEmail=True)
+
+    if not users:
+        print("There are no users")
+        return
+
+    data = {}
+
+    for user in users:
+      user = user.to_dict()
+      if user["email"] == email:
+        if user["role"] == "librarian":
+            data = user
+        else:
+            print(f"{email} is not a librarian email")
+            return
+      continue
+
+    if data == {}:
+        print("User not found")
+        return
+
+    prev_page = True
+    while prev_page:
+        clear_terminal()
+        print(f"Welcome back, {data["name"]}\n")
+        actions = ["View Profile", "Add Book", "Approve_Request"]
+
+        for idx, action in enumerate(actions, 1):
+          print(f"[{idx}] {action}")
+
+        user_action = input("\nPick an action: ").strip()
+
+
+        while user_action not in ["1", "2"]:
+          print("Action invalid")
+          user_action = input("\nPick an action: ").strip()
+
+        clear_terminal()
+        if user_action == "1":
+            print("Viewing Profile\n")
+            print(f"Name: {data["name"]}" \
+            f"Email: {data["email"]}" \
+            f"Department: {data["department"]}"
+            )
+            print()
+
+        elif user_action == "2":
+            print("Add book")
+        elif user_action == "3":
+            print("Approve book")
 
         prev = input("Anything else y/N: ")
         if prev == "y":
