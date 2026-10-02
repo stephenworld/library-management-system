@@ -2,15 +2,15 @@
   "books": [
     {
       "id": "book_001",
-      "title": "",
-      "author": "",
-      "ISBN": "",
-      "available": "BORROWED | AVAILABLE",
+      "title": "Library Management",
+      "author": "Stephen Adewale",
+      "ISBN": "1234567890",
+      "available": true,
       "history": [
         {
           "member_id": "mem_001",
-          "borrowed_date": "",
-          "returned_date": ""
+          "borrowed_date": "7/10/22",
+          "returned_date": "10/10/22"
         }
       ]
     }
@@ -22,8 +22,6 @@
       "borrowed_books": [
         {
           "id": "book_001",
-          "author": "",
-          "ISBN": "",
           "status": "RETURNED - INUSE"
         }
       ]
