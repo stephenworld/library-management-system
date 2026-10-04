@@ -1,0 +1,22 @@
+[
+    {
+        "id": "001",
+        "name": "Yusuf Zulu",
+        "email": "yusufzulu@gmail.com",
+        "role": "member",
+        "borrowed_books": [
+            {
+                "book_id": "002",
+                "date_borrowed": "2026-10-04T19:14:20.578643",
+                "date_returned": null
+            }
+        ]
+    },
+    {
+        "id": "002",
+        "name": "Stephen Adewale",
+        "email": "test@gmail.com",
+        "role": "librarian",
+        "department": "Admin"
+    }
+]

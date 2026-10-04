@@ -1,0 +1,20 @@
+[
+    {
+        "book_id": "001",
+        "title": "The Awakeninf",
+        "author": "Jobs Akin",
+        "isbn": "1234567890",
+        "status": "Available",
+        "borrowed_at": "2026-10-04T19:14:05.442899",
+        "returned_at": "2026-10-04T19:17:44.677889"
+    },
+    {
+        "book_id": "002",
+        "title": "test",
+        "author": "test",
+        "isbn": "test",
+        "status": "Borrowed",
+        "borrowed_at": "2026-10-04T19:14:20.578643",
+        "returned_at": null
+    }
+]
