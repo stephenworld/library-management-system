@@ -55,12 +55,13 @@ class Member(User):
         super().__init__(user_id, name, email)
         self.borrowed_books = []
 
-    def request_book(self, book):
+    def request_book(self, library, book):
         if len(self.borrowed_books) >= self.MAX_BOOKS:
             return False, f"Request denied. You have reached your limit of {self.MAX_BOOKS} books."
 
         if book.status == "Available":
             book.status = "Pending Approval"
+            library.save_database()
             return True, f"'{book.title}' requested. Waiting for approval."
         
         return False, f"'{book.title}' is not available."
@@ -88,6 +89,8 @@ class Librarian(User):
     def add_book(self, library, book_id, title, author, isbn):
         new_book = Book(book_id, title, author, isbn)
         library.catalog.append(new_book)
+
+        library.save_database()
         return new_book, f"Librarian {self.name} added '{title}' by {author}."
 
     def approve_request(self, member, book):
