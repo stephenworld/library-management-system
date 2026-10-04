@@ -1,10 +1,40 @@
 {
     "requests": [
         {
-            "user_id": "005",
+            "request_id": 1,
+            "user_id": "001",
             "book_id": "001",
-            "status": "Pending Approval",
-            "requested_at": "2024-06-10 12:00:00"
+            "status": "returned",
+            "requested_at": "2026-10-04T19:04:00.631240",
+            "approved_at": "2026-10-04T19:05:25.487747",
+            "returned_at": "2026-10-04T19:06:27.316146"
+        },
+        {
+            "request_id": 2,
+            "user_id": "001",
+            "book_id": "001",
+            "status": "returned",
+            "requested_at": "2026-10-04T19:07:22.134589",
+            "approved_at": "2026-10-04T19:14:05.442899",
+            "returned_at": "2026-10-04T19:17:44.677889"
+        },
+        {
+            "request_id": 3,
+            "user_id": "001",
+            "book_id": "002",
+            "status": "approved",
+            "requested_at": "2026-10-04T19:13:07.258897",
+            "approved_at": "2026-10-04T19:14:20.578643",
+            "returned_at": null
+        },
+        {
+            "request_id": 4,
+            "user_id": "001",
+            "book_id": "001",
+            "status": "rejected",
+            "requested_at": "2026-10-04T19:27:21.799707",
+            "approved_at": null,
+            "returned_at": null
         }
     ]
 }

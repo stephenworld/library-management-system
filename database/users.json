@@ -1,30 +1,22 @@
 [
     {
+        "id": "001",
+        "name": "Yusuf Zulu",
+        "email": "yusufzulu@gmail.com",
+        "role": "member",
+        "borrowed_books": [
+            {
+                "book_id": "002",
+                "date_borrowed": "2026-10-04T19:14:20.578643",
+                "date_returned": null
+            }
+        ]
+    },
+    {
         "id": "002",
         "name": "Stephen Adewale",
-        "email": "stepen@gmail.com",
-        "role": "librarian",
-        "department": "Engineering"
-    },
-    {
-        "id": "005",
-        "name": "Stephen Adewale",
-        "email": "buildwithstephen@gmail.com",
-        "role": "member",
-        "borrowed_books": []
-    },
-    {
-        "id": "999",
-        "name": "Zulu Rodiat",
-        "email": "rodiatzulu@gmail.com",
-        "role": "member",
-        "borrowed_books": []
-    },
-    {
-        "id": "1000",
-        "name": "Test",
         "email": "test@gmail.com",
-        "role": "member",
-        "borrowed_books": []
+        "role": "librarian",
+        "department": "Admin"
     }
 ]
