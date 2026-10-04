@@ -1,29 +1,38 @@
-from utils import get_user_role, clear_terminal, create_account, login_member, login_librarian
-from models import Library
+from models import Library, LibraryDataError
+from utils import clear_terminal, create_account, get_user_role, login_librarian, login_member
 
-library = Library()
-books, users, message = library.load_database()
+clear_terminal()
+def main() -> None:
+    library = Library()
+    try:
+        books, users, message = library.load_database()
+    except LibraryDataError as error:
+        print(f"Unable to load library data: {error}")
+        return
 
-exit = "y"
-while exit == "y":
-  action = get_user_role()
+    print(message)
+    print()
+    while True:
+        action = get_user_role()
+        clear_terminal()
+        try:
+            if action == "1":
+                create_account(library, users)
+            elif action == "2":
+                login_member(users, books, library)
+            elif action == "3":
+                login_librarian(users, books, library)
+        except LibraryDataError as error:
+            print(f"Could not save library data: {error}")
 
-  clear_terminal()
-  match action:
-    case "1":
-      create_account(library, users)
-    case "2":
-      login_member(users, books, library)
-    case "3":
-      login_librarian(users, books, library)
-    case _:
-      print("Unknown Action")
+        again = input("Do you want to perform another action? y/N: ").strip().lower()
+        if again != "y":
+            print("Program exited.")
+            return
+        clear_terminal()
 
-  exit = input("Do you want to perform any other action y/N: ").strip().lower()
 
-  clear_terminal()
-  while exit != "y":
-    print("Program exitted!!!")
-    break
+if __name__ == "__main__":
+    main()
 
 
