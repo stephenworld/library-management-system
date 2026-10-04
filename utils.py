@@ -1,290 +1,290 @@
+import re
+import sys
+
+from models import Library, LibraryError, Librarian, Member
+
+
 def clear_terminal():
-    import sys
     sys.stdout.write("\033[H\033[2J\033[3J")
     sys.stdout.flush()
+
 
 def get_user_role():
     print("Welcome to console LMS")
     print("Choose your current position\n")
+    actions = ["Create Account", "Login (Member)", "Login (Librarian)"]
+    for index, action in enumerate(actions, 1):
+        print(f"[{index}] {action}")
 
-    for idx, role in enumerate(["Create Account", "Login (Member)", "Login (Librarian)"], 1):
-        print(f"[{idx}] {role}")
+    choice = input("\nChoose a role: ").strip()
+    while choice not in {"1", "2", "3"}:
+        print(f"{choice} is an invalid role. Choose 1, 2, or 3.")
+        choice = input("Choose a role: ").strip()
+    return choice
 
-    user_action = input("\nChoose a role: ").strip()
 
-    while user_action not in ["1", "2", "3"]:
-        print(f"{user_action} is an invalid role.\nTry [1] Librarian or [2] Member")
-        user_action = input("Choose a role: ").strip()
-
-    return user_action
-
-def is_valid_syntax(email_input):
-    import re
-    EMAIL_REGEX = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-
-    if re.fullmatch(EMAIL_REGEX, email_input):
-        return True
-    return False
-
-def prompt_input(label, isEmail=False):
+def prompt_input(label, is_email=False):
     value = input(f"{label}: ").strip()
-    
-    if isEmail:
-        while is_valid_syntax(value) == False:
-            print("\n!!! Enter Valid Email")
-            value = input(f"{label}: ").strip()
-            is_valid_syntax(value)
-
-    else:
-        while not value:
-            print(f"\n!!! {label} cannot be empty. Please try again.")
-            value = input(f"{label}: ").strip()
-
+    email_pattern = r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
+    while not value or (is_email and not re.fullmatch(email_pattern, value)):
+        print("Enter a valid email address." if is_email else f"{label} cannot be empty.")
+        value = input(f"{label}: ").strip()
     return value
 
 
 def create_account(library, users):
     print("Create Account Page\n")
+    print("[1] Member\n[2] Librarian\n")
+    role_choice = input("Choose an account type: ").strip()
 
-    print("Available Account Type")
-    account_roles = ["Member", "Librarian"]
-
-    for idx, role in enumerate(account_roles, 1):
-        print(f"[{idx}] {role}")
-
-    role = input("\nChoose an account type 1[Member] 2[Librarian]: ").strip()
-
-    while role not in ["1", "2"]:
-        print("Invalid Actions")
-        role = input("Choose an account type 1[Member] 2[Librarian]: ").strip()
-
-    users_dict = [user.to_dict() for user in users]
-    if users_dict:
-        last_user_id = max(int(user["id"]) for user in users_dict)
-        next_id = f"{last_user_id + 1:03d}"
-    else:
-        next_id = "001"
+    while role_choice not in {"1", "2"}:
+        print("\n!!! Invalid account type.")
+        role_choice = input("Choose [1] Member or [2] Librarian: ").strip()
 
     clear_terminal()
-    if role == "1":
-        print("Creating Member Account\n")
-        _, mes = library.register_user(
-            "member", 
-            next_id, 
-            prompt_input("Name"), 
-            prompt_input("Email", isEmail=True)
-        )
-        print(mes)
+    next_id = _next_id(users, "id")
+    role = "member" if role_choice == "1" else "librarian"
+    print("\nCreate your account")
+    name = prompt_input("Name")
+    email = prompt_input("Email", is_email=True)
+    department = prompt_input("Department") if role == "librarian" else None
+    _, message = library.register_user(role, next_id, name, email, department)
+    print(message)
 
-    elif role == "2":
-        print("Creating Librarian Account\n")
-        _, mes = library.register_user(
-            "librarian", 
-            next_id, 
-            prompt_input("Name"), 
-            prompt_input("Email", isEmail=True), 
-            prompt_input("Department")
-        )
-        print(mes)
 
-from models import Member
 def login_member(users, books, library):
-    clear_terminal()
-    print("Provide your registered email to login as a member\n")
-    email = prompt_input("Email", isEmail=True)
-
-    if not users:
-        print("There are no users")
+    email = prompt_input("Registered member email", is_email=True).casefold()
+    matching_member = next(
+        (
+            user for user in users
+            if isinstance(user, Member) and user.email.casefold() == email
+        ),
+        None,
+    )
+    if matching_member is None:
+        print("Member not found.")
         return
-
-    data = {}
-
-    for user in users:
-        user = user.to_dict()
-        if user["email"] == email:
-            data = user
-            break
-
-    if data == {}:
-        print("User not found")
-        return
+    member = matching_member
 
     while True:
         clear_terminal()
-        print(f"Welcome back, {data['name']}\n")
-        actions = ["View Profile", "Request Book", "View Book Status", "Return Books", "Logout"]
-        
-        for idx, action in enumerate(actions, 1):
-            print(f"[{idx}] {action}")
-    
-        user_action = input("\nPick an action: ").strip()
-
-        if user_action not in ["1", "2", "3", "4", "5"]:
-            print("Action invalid")
-            input("Press Enter to continue...")
-            continue
+        print(f"Welcome back, {member.name}\n")
+        actions = ["View Profile", "Request Book", "View Book Status", "Return Book", "Sync Data", "Logout"]
+        for index, action in enumerate(actions, 1):
+            print(f"[{index}] {action}")
+        choice = input("\nPick an action: ").strip()
 
         clear_terminal()
 
-        if user_action == "1":
-            print("Profile Details\n")
-
-            print(f"Name: {data["name"]}")
-            print(f"Email: {data["email"]}") 
-
-            if not data["borrowed_books"]:
-                print(f"Borrowed Books: {len(data["borrowed_books"])}\n")
-            else:
-                print(f"\n{"Book ID":<10} {"Title":<30} {"Author":<20} {"ISBN":<15} {"Status":<10}")
-                for b in data["borrowed_books"]:
-                    print(f"{b["book_id"]:<10} {b["title"]:<30} {b["author"]:<20} {b["isbn"]:<15} {b["status"]:<10}")
-
-            print()
-
-        elif user_action == "2":
-            print("Request a book")
-
-            if not books:
-                print("No books available")
+        try:
+            if choice == "1":
+                _show_member_profile(member)
+            elif choice == "2":
+                _request_book(member, books, library)
+            elif choice == "3":
+                _show_member_status(member, library)
+            elif choice == "4":
+                _return_book(member, library)
+            elif choice == "5":
+                member_id = member.id
+                sync_data(library, books, users)
+                matching_member = next(
+                    (
+                        user for user in users
+                        if isinstance(user, Member) and user.id == member_id
+                    ),
+                    None,
+                )
+                if matching_member is None:
+                    print("Your account no longer exists; you have been logged out.")
+                    return
+                member = matching_member
+            elif choice == "6":
+                print("Logging out...")
                 return
-
-            print(f"\n{"Book ID":<10} {"Title":<30} {"Author":<20} {"ISBN":<15} {"Status":<10}")
-            for book in books:
-                book = book.to_dict()
-                print(f"{book["book_id"]:<10} {book["title"]:<30} {book["author"]:<20} {book["isbn"]:<15} {book["status"]:<10}")
-
-            book_id = prompt_input("\nEnter Book ID to request: ").strip()
-
-            all_books_ids = [book.to_dict()["book_id"] for book in books]
-            available_books_ids = [book.to_dict()["book_id"] for book in books if book.to_dict()["status"] == "Available"]
-            
-            while book_id not in all_books_ids:
-                print("Book ID doesn't exist")
-                book_id = prompt_input("\nEnter Book ID to request: ").strip()
-                
-
-            while book_id not in available_books_ids:
-                print("this book isn't available currently")
-                book_id = prompt_input("\nEnter another Book ID to request: ").strip()
-
-            member = Member(
-                data["id"], 
-                data["name"], 
-                data["email"]
-            )
-
-            book_to_request = next((book for book in books if book.to_dict()["book_id"] == book_id), None)
-
-            _, mes = member.request_book(library, book_to_request)
-            print(mes)
+            else:
+                print("Action invalid.")
+        except LibraryError as error:
+            print(error)
+        input("\nPress Enter to continue...")
 
 
-
-        elif user_action == "3":
-            print("Viewing My Books Status\n")
-
-        elif user_action == "4":
-            print("Return Book")
-
-        elif user_action == "5":
-            print("Logging out...")
-            break
-
-        prev = input("Anything else y/N: ").strip().lower()
-        if prev != "y":
-            break
-
-
-
-from models import Librarian
 def login_librarian(users, books, library):
     clear_terminal()
-    print("Provide registered email to login as a librarian")
-
-    email = prompt_input("Email", isEmail=True)
-
-    if not users:
-        print("There are no users")
+    email = prompt_input("Registered librarian email", is_email=True).casefold()
+    matching_librarian = next(
+        (
+            user for user in users
+            if isinstance(user, Librarian) and user.email.casefold() == email
+        ),
+        None,
+    )
+    if matching_librarian is None:
+        print("Librarian not found.")
         return
-
-    data = {}
-
-    for user in users:
-        user = user.to_dict()
-        if user["email"] == email:
-            if user["role"] == "librarian":
-                data = user
-            else:
-                print(f"{email} is not a librarian")
-            break
-
-
-    if data == {}:
-        print("User not found")
-        return
+    librarian = matching_librarian
 
     while True:
         clear_terminal()
-        print(f"Welcome back, {data['name']}\n")
-        actions = ["View Profile", "Add Book", "Approve Book Request", "View All Books", "Logout"]
-        
-        for idx, action in enumerate(actions, 1):
-            print(f"[{idx}] {action}")
-    
-        user_action = input("\nPick an action: ").strip()
+        print(f"Welcome back, {librarian.name}\n")
 
-        if user_action not in ["1", "2", "3", "4", "5"]:
-            print("Action invalid")
-            input("Press Enter to continue...")
-            continue
-
+        actions = ["View Profile", "Add Book", "Approve Book Request", "View All Books", "Sync Data", "Logout"]
+        for index, action in enumerate(actions, 1):
+            print(f"[{index}] {action}")
+        choice = input("\nPick an action: ").strip()
         clear_terminal()
 
-        if user_action == "1":
-            print("Profile Details\n")
+        try:
+            if choice == "1":
+                print("Librarian Profile\n")
 
-            print(f"Name: {data["name"]}")
-            print(f"Email: {data["email"]}") 
-            print(f"Department: {data["department"]}")
+                print(f"Name: {librarian.name}\nEmail: {librarian.email}")
+                print(f"Department: {librarian.department}")
+            elif choice == "2":
+                print("Record New Book\n")
 
-        elif user_action == "2":
-            print("Adding a book")
-            librarian = Librarian(
-                data["id"], 
-                data["name"], 
-                data["email"], 
-                data["department"]
-            )
+                book, message = librarian.add_book(
+                    library,
+                    _next_id(books, "book_id"),
+                    prompt_input("Book Title"),
+                    prompt_input("Book Author"),
+                    prompt_input("Book ISBN"),
+                )
+                print(message)
+            elif choice == "3":
+                print("Review Requests\n")
 
-            books_dict = [book.to_dict() for book in books]
-            if books_dict:
-                last_book_id = max(int(book["book_id"]) for book in books_dict)
-                next_book_id = f"{last_book_id + 1:03d}"
+                _review_requests(librarian, library)
+            elif choice == "4":
+                _show_books(books)
+            elif choice == "5":
+                librarian_id = librarian.id
+                sync_data(library, books, users)
+                matching_librarian = next(
+                    (
+                        user for user in users
+                        if isinstance(user, Librarian) and user.id == librarian_id
+                    ),
+                    None,
+                )
+                if matching_librarian is None:
+                    print("Your account no longer exists; you have been logged out.")
+                    return
+                librarian = matching_librarian
+            elif choice == "6":
+                print("Logging out...")
+                return
             else:
-                next_book_id = "001"
-            
-            _, msg = librarian.add_book(
-                library,
-                next_book_id,
-                prompt_input("Book Title"),
-                prompt_input("Book Author"),
-                prompt_input("Book ISBN")
-            )
-
-            print(msg)
+                print("Action invalid.")
+        except LibraryError as error:
+            print(error)
+        input("\nPress Enter to continue...")
 
 
-        elif user_action == "3":
-            print("Approving Book Request")
+def _request_book(member, books, library):
+    print("Request a book")
+    _show_books(books)
+    book_id = prompt_input("\nEnter Book ID to request")
+    book = next((item for item in books if item.book_id == book_id), None)
+    if book is None:
+        print("Book ID does not exist.")
+        return
+    _, message = member.request_book(library, book)
+    print(message)
 
-        elif user_action == "4":
-            print("Viewing All Books\n")
 
-        elif user_action == "5":
-            print("Logging out...")
-            break
+def _show_member_profile(member):
+    print("Member Profile")
+    print(f"\nName: {member.name}\nEmail: {member.email}")
+    print(f"Active borrowed books: {len(member.borrowed_books)}")
+    _show_books(member.borrowed_books)
 
-        prev = input("Anything else y/N: ").strip().lower()
-        if prev != "y":
-            break
 
+def _show_member_status(member, library):
+    print("Your requests")
+    member_requests = [
+        request for request in library.requests if request.user_id == member.id
+    ]
+    if not member_requests:
+        print("\nNo requests.")
+
+    for request in member_requests:
+        book = next(book for book in library.catalog if book.book_id == request.book_id)
+        print(
+            f"Request {request.request_id}: {book.title} - {request.status}; "
+            f"requested {request.requested_at}"
+        )
+        if request.approved_at:
+            print(f"  Approved: {request.approved_at}")
+        if request.returned_at:
+            print(f"  Returned: {request.returned_at}")
+
+    print("\nYour borrowed books")
+    _show_books(member.borrowed_books)
+
+
+def _return_book(member, library):
+    if not member.borrowed_books:
+        print("You have no books to return.")
+        return
+    _show_books(member.borrowed_books)
+    book_id = prompt_input("Enter Book ID to return")
+    _, message = library.return_book(member.id, book_id)
+    print(message)
+
+
+def _review_requests(librarian, library):
+    requests = library.list_pending_requests()
+    if not requests:
+        print("There are no pending requests.")
+        return
+    print("\nPending requests")
+    for request in requests:
+        member = next(user for user in library.users if user.id == request.user_id)
+        book = next(book for book in library.catalog if book.book_id == request.book_id)
+        print(
+            f"[{request.request_id}] {member.name} requests "
+            f"[{book.book_id}] {book.title}"
+        )
+    try:
+        request_id = int(prompt_input("Request ID"))
+    except ValueError:
+        print("Request ID must be a number.")
+        return
+    decision = input("Approve or reject [a/r]: ").strip().lower()
+    if decision == "a":
+        _, message = library.approve_request(request_id)
+    elif decision == "r":
+        _, message = library.reject_request(request_id)
+    else:
+        print("No change made.")
+        return
+    print(f"Librarian {librarian.name}: {message}")
+
+
+def _show_books(books):
+    if not books:
+        print("\nNo books to display.")
+        return
+
+    print("-"*100)
+    print(f"{'Book ID':<10} | {'Title':<30} | {'Author':<24} | {'ISBN':<16} | {'Status':<10}")
+    print("-"*100)
+
+    for book in books:
+        print(f"{book.book_id:<10} | {book.title:<30} | {book.author:<24} | {book.isbn:<16} | {book.status}")
+    print("-"*100)
+
+
+def sync_data(library, books, users):
+    refreshed_books, refreshed_users, message = library.load_database()
+    books[:] = refreshed_books
+    users[:] = refreshed_users
+    library.catalog = books
+    library.users = users
+    print(message)
+
+
+def _next_id(records, attribute):
+    values = [int(getattr(record, attribute)) for record in records]
+    return f"{max(values, default=0) + 1:03d}"
