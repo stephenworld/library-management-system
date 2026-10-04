@@ -1,12 +1,5 @@
 [
     {
-        "id": "001",
-        "name": "Stephen Adewale",
-        "email": "stephen@gmail.com",
-        "role": "member",
-        "borrowed_books": []
-    },
-    {
         "id": "002",
         "name": "Stephen Adewale",
         "email": "stepen@gmail.com",
@@ -14,14 +7,21 @@
         "department": "Engineering"
     },
     {
-        "id": 3,
-        "name": "12",
-        "email": "123",
+        "id": "005",
+        "name": "Stephen Adewale",
+        "email": "buildwithstephen@gmail.com",
         "role": "member",
         "borrowed_books": []
     },
     {
-        "id": 4,
+        "id": "999",
+        "name": "Zulu Rodiat",
+        "email": "rodiatzulu@gmail.com",
+        "role": "member",
+        "borrowed_books": []
+    },
+    {
+        "id": "1000",
         "name": "Test",
         "email": "test@gmail.com",
         "role": "member",

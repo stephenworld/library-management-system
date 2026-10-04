@@ -1,0 +1,10 @@
+{
+    "requests": [
+        {
+            "user_id": "005",
+            "book_id": "001",
+            "status": "Pending Approval",
+            "requested_at": "2024-06-10 12:00:00"
+        }
+    ]
+}
