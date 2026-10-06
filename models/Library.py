@@ -1,8 +1,10 @@
 import json
 import os
 import tempfile
-from datetime import datetime
 from pathlib import Path
+from datetime import datetime
+from models.Book import Book, BookRequest
+from models.User import Librarian, Member
 
 
 class LibraryError(Exception):
@@ -20,116 +22,14 @@ class ConflictError(LibraryError):
 class LibraryDataError(LibraryError):
     pass
 
-
-class Book:
-    def __init__(
-        self, book_id, title, author, isbn, status="Available",
-        borrowed_at=None, returned_at=None,
-    ):
-        self.book_id = str(book_id)
-        self.title = title
-        self.author = author
-        self.isbn = isbn
-        self.status = status
-        self.borrowed_at = self._parse_date(borrowed_at)
-        self.returned_at = self._parse_date(returned_at)
-
-    @staticmethod
-    def _parse_date(value):
-        return datetime.fromisoformat(value) if isinstance(value, str) else value
-
-    def to_dict(self):
-        return {
-            "book_id": self.book_id,
-            "title": self.title,
-            "author": self.author,
-            "isbn": self.isbn,
-            "status": self.status,
-            "borrowed_at": self.borrowed_at.isoformat() if self.borrowed_at else None,
-            "returned_at": self.returned_at.isoformat() if self.returned_at else None,
-        }
-
-
-class User:
-    def __init__(self, user_id, name, email):
-        self.id = str(user_id)
-        self.name = name
-        self.email = email
-
-    def to_dict(self):
-        return {"id": self.id, "name": self.name, "email": self.email}
-
-
-class Member(User):
-    MAX_BOOKS = 3
-
-    def __init__(self, user_id, name, email):
-        super().__init__(user_id, name, email)
-        self.borrowed_books = []
-
-    def request_book(self, library, book):
-        return library.request_book(self.id, book.book_id)
-
-    def to_dict(self):
-        data = super().to_dict()
-        data["role"] = "member"
-        data["borrowed_books"] = [
-            {
-                "book_id": book.book_id,
-                "date_borrowed": book.borrowed_at.isoformat() if book.borrowed_at else None,
-                "date_returned": book.returned_at.isoformat() if book.returned_at else None,
-            }
-            for book in self.borrowed_books
-        ]
-        return data
-
-
-class Librarian(User):
-    def __init__(self, user_id, name, email, department):
-        super().__init__(user_id, name, email)
-        self.department = department
-
-    def add_book(self, library, book_id, title, author, isbn):
-        return library.add_book(book_id, title, author, isbn)
-
-    def to_dict(self):
-        data = super().to_dict()
-        data["role"] = "librarian"
-        data["department"] = self.department
-        return data
-
-
-class BookRequest:
-    def __init__(
-        self, request_id, user_id, book_id, status, requested_at=None,
-        approved_at=None, returned_at=None,
-    ):
-        self.request_id = int(request_id)
-        self.user_id = str(user_id)
-        self.book_id = str(book_id)
-        self.status = status
-        self.requested_at = requested_at or datetime.now().isoformat()
-        self.approved_at = approved_at
-        self.returned_at = returned_at
-
-    def to_dict(self):
-        return {
-            "request_id": self.request_id,
-            "user_id": self.user_id,
-            "book_id": self.book_id,
-            "status": self.status,
-            "requested_at": self.requested_at,
-            "approved_at": self.approved_at,
-            "returned_at": self.returned_at,
-        }
-
-
 class Library:
     def __init__(self):
         self.catalog = []
         self.users = []
         self.requests = []
-        database_directory = Path(__file__).resolve().parent / "database"
+
+        database_directory = Path(__file__).resolve().parent.parent / "database"
+
         self.books_file = database_directory / "books.json"
         self.users_file = database_directory / "users.json"
         self.requests_file = database_directory / "requests.json"
@@ -536,3 +436,4 @@ class Library:
         finally:
             for temporary_path in temporary_paths.values():
                 temporary_path.unlink(missing_ok=True)
+

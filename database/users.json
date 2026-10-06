@@ -9,6 +9,11 @@
                 "book_id": "002",
                 "date_borrowed": "2026-10-04T19:14:20.578643",
                 "date_returned": null
+            },
+            {
+                "book_id": "004",
+                "date_borrowed": "2026-10-05T14:49:05.879452",
+                "date_returned": null
             }
         ]
     },
@@ -18,5 +23,33 @@
         "email": "test@gmail.com",
         "role": "librarian",
         "department": "Admin"
+    },
+    {
+        "id": "003",
+        "name": "Yusuf Akonho",
+        "email": "yusufakonho@gmail.com",
+        "role": "member",
+        "borrowed_books": []
+    },
+    {
+        "id": "004",
+        "name": "Stephen Adewale",
+        "email": "stephen@gmail.com",
+        "role": "librarian",
+        "department": "Admin"
+    },
+    {
+        "id": "005",
+        "name": "Abdulhamid",
+        "email": "theonlyabdulhamid@gmail.com",
+        "role": "librarian",
+        "department": "Admin"
+    },
+    {
+        "id": "006",
+        "name": "1234",
+        "email": "123@ga.co",
+        "role": "member",
+        "borrowed_books": []
     }
 ]

@@ -1,4 +1,4 @@
-from models import Library, LibraryDataError
+from models.Library import Library, LibraryDataError
 from utils import clear_terminal, create_account, get_user_role, login_librarian, login_member
 
 clear_terminal()

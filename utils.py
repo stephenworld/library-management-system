@@ -1,7 +1,7 @@
 import re
 import sys
-
-from models import Library, LibraryError, Librarian, Member
+from models.Library import LibraryError
+from models.User import Librarian, Member
 
 
 def clear_terminal():
