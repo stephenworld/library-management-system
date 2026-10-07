@@ -16,5 +16,23 @@
         "status": "Borrowed",
         "borrowed_at": "2026-10-04T19:14:20.578643",
         "returned_at": null
+    },
+    {
+        "book_id": "003",
+        "title": "Investment Submit",
+        "author": "Kwara State",
+        "isbn": "2026-submit-1",
+        "status": "Available",
+        "borrowed_at": "2026-10-06T10:39:49.027275",
+        "returned_at": "2026-10-06T10:40:34.510637"
+    },
+    {
+        "book_id": "004",
+        "title": "Better Life",
+        "author": "Sharp Rap",
+        "isbn": "234567uhs",
+        "status": "Borrowed",
+        "borrowed_at": "2026-10-05T14:49:05.879452",
+        "returned_at": null
     }
 ]
